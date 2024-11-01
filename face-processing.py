@@ -208,41 +208,97 @@ def ajustar_contraste_hsv(frame, alow, ahigh, amin, amax):
 imageRGB = cv2.cvtColor(imageBGR, cv2.COLOR_BGR2RGB)
 image_gray = cv2.cvtColor(imageRGB, cv2.COLOR_RGB2GRAY)
 
-cv2.imshow('Video original', imageBGR)
+# Mostrar imagen original
+plt.figure(figsize=(10, 5))
+plt.subplot(2, 3, 1)
+plt.imshow(imageRGB)
+plt.title("Video original")
+plt.axis('off')
 
-# Aplicar suavizado a la imagen
-# image_smooth = smooth_image(imageBGR, size, blurtype)
-
-# sepamos los canales de la imagen
-# b, g, r = cv2.split(image_smooth)
+# Separemos los canales de la imagen
 b, g, r = cv2.split(imageBGR)
 
-
 # Aplicar la corrección gamma
-gamma_frame = gamma_correction(b,g,r, gamma)        
-cv2.imshow('Video con correccion gamma', gamma_frame)
-#cv2.waitKey(0)
-# Aplicamos y mostramos la ecualización del histograma
-equalized_image = equalize_histogram_hsv(gamma_frame, k)        
-cv2.imshow('Video ecualizado', equalized_image)
-#cv2.waitKey(0)
-# Aplicamos el auto contraste restringido
+gamma_frame = gamma_correction(b, g, r, gamma)        
+gamma_frame_rgb = cv2.cvtColor(gamma_frame, cv2.COLOR_BGR2RGB)
+plt.subplot(2, 3, 2)
+plt.imshow(gamma_frame_rgb)
+plt.title("Video con corrección gamma")
+plt.axis('off')
+
+# Aplicar suavizado y mostrar
+smooth = smooth_image(gamma_frame, size, blurtype)
+smooth_rgb = cv2.cvtColor(smooth, cv2.COLOR_BGR2RGB)
+plt.subplot(2, 3, 6)
+plt.imshow(smooth_rgb)
+plt.title("Video suavizado")
+plt.axis('off')
+
+
+# Aplicar y mostrar la ecualización del histograma
+equalized_image = equalize_histogram_hsv(smooth, k)
+equalized_image_rgb = cv2.cvtColor(equalized_image, cv2.COLOR_BGR2RGB)
+plt.subplot(2, 3, 3)
+plt.imshow(equalized_image_rgb)
+plt.title("Video ecualizado")
+plt.axis('off')
+
+# Aplicar el ajuste de contraste y mostrar
 image_contrast = ajustar_contraste_hsv(equalized_image, alow, ahigh, amin, amax)
-cv2.imshow('Video contrastado', image_contrast)
+image_contrast_rgb = cv2.cvtColor(image_contrast, cv2.COLOR_BGR2RGB)
+plt.subplot(2, 3, 4)
+plt.imshow(image_contrast_rgb)
+plt.title("Video contrastado")
+plt.axis('off')
 
-# Convertir el video contrastado a escala de grises
+# Convertir la imagen suavisada a escala de grises y mostrar
 gray_frame = cv2.cvtColor(image_contrast, cv2.COLOR_BGR2GRAY)
+plt.subplot(2, 3, 5)
+plt.imshow(gray_frame, cmap="gray")
+plt.title("Video final en gris")
+plt.axis('off')
 
-smooth = smooth_image(image_contrast, size, blurtype)
+# Guardar la imagen procesada
+cv2.imwrite(args["output"], gray_frame)
 
-# Aplicamos y mostramos la mascara al video
-# masked_frame = mascara(gray_frame)
-cv2.imshow('Video final', gray_frame)
-cv2.waitKey(0)
-#Guadamos la imagen procesada
-# cv2.imwrite(args["output"], gray_frame)
-cv2.imwrite(args["output"], smooth)
-#output_video.write(masked_frame)
+# Mostrar todas las imágenes en una única ventana
+plt.tight_layout()
+plt.show()
+# cv2.imshow('Video original', imageBGR)
+
+# # Aplicar suavizado a la imagen
+# # image_smooth = smooth_image(imageBGR, size, blurtype)
+
+# # sepamos los canales de la imagen
+# # b, g, r = cv2.split(image_smooth)
+# b, g, r = cv2.split(imageBGR)
+
+
+# # Aplicar la corrección gamma
+# gamma_frame = gamma_correction(b,g,r, gamma)        
+# cv2.imshow('Video con correccion gamma', gamma_frame)
+# #cv2.waitKey(0)
+# # Aplicamos y mostramos la ecualización del histograma
+# equalized_image = equalize_histogram_hsv(gamma_frame, k)        
+# cv2.imshow('Video ecualizado', equalized_image)
+# #cv2.waitKey(0)
+# # Aplicamos el auto contraste restringido
+# image_contrast = ajustar_contraste_hsv(equalized_image, alow, ahigh, amin, amax)
+# cv2.imshow('Video contrastado', image_contrast)
+
+# # Convertir el video contrastado a escala de grises
+# gray_frame = cv2.cvtColor(image_contrast, cv2.COLOR_BGR2GRAY)
+
+# smooth = smooth_image(image_contrast, size, blurtype)
+
+# # Aplicamos y mostramos la mascara al video
+# # masked_frame = mascara(gray_frame)
+# cv2.imshow('Video final', gray_frame)
+# cv2.waitKey(0)
+# #Guadamos la imagen procesada
+# # cv2.imwrite(args["output"], gray_frame)
+# cv2.imwrite(args["output"], smooth)
+# #output_video.write(masked_frame)
 
 
 
