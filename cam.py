@@ -1,6 +1,6 @@
 # USAGE
 # python cam.py --face cascades/haarcascade_frontalface_default.xml
-# python cam.py --face cascades/haarcascade_frontalface_default.xml --video video/adrian_face.mov
+# python cam.py --face cascades/haarcascade_frontalface_default.xml --video video/china.mp4
 
 # import the necessary packages
 from pyimagesearch.facedetector import FaceDetector
